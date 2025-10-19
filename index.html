@@ -3,189 +3,332 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Automatically load the counter image to increment count
+        // Visit Counter Logic (Copied from your reference)
         window.addEventListener('DOMContentLoaded', () => {
           const img = new Image();
           img.src = 'https://profile-counter.glitch.me/moodmusic/count.svg';
         });
-    
-      // Function to show the visit counter popup
-      function showVisitCounter() {
-        Swal.fire({
-          title: 'Visit Counter',
-          html: '<img src="https://profile-counter.glitch.me/moodmusic/count.svg" alt="Visit Counter" style="height: 40px;" />',
-          confirmButtonText: 'Close',
-          background: '#f9f9f9',
-          showClass: {
-            popup: 'swal2-show'
-          },
-          hideClass: {
-            popup: 'swal2-hide'
+        function showVisitCounter() {
+          Swal.fire({
+            title: 'Visit Counter',
+            html: '<img src="https://profile-counter.glitch.me/moodmusic/count.svg" alt="Visit Counter" style="height: 40px;" />',
+            confirmButtonText: 'Close',
+            background: '#f9f9f9',
+            showClass: { popup: 'swal2-show' },
+            hideClass: { popup: 'swal2-hide' }
+          });
+        }
+        window.addEventListener('keydown', function (event) {
+          if (event.shiftKey && event.key === 'V') { showVisitCounter(); }
+        });
+        Object.defineProperty(window, 'visits', {
+          get: function () {
+            showVisitCounter();
+            return 'Displaying visit counter...';
           }
         });
-      }
-
-      // Listen for the 'Shift + V' key combination
-      window.addEventListener('keydown', function (event) {
-        // Check if Shift and V are pressed together
-        if (event.shiftKey && event.key === 'V') {
-          showVisitCounter();
-        }
-      });
-    
-      // Add 'visits' command to show the counter SVG in the console
-      Object.defineProperty(window, 'visits', {
-        get: function () {
-          showVisitCounter();
-          return 'Displaying visit counter...';
-        }
-      });
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mood Music</title>
+    <title>Mood Music | Interactive Aura</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Reset defaults */
+        /* Base Styles: Dynamic Background */
         body {
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #7ac7fa, #35adfc); /* Elegant gradient */
-            /* background: linear-gradient(135deg, #2c3e50, #3498db);*/
-            font-family: 'Montserrat', sans-serif; /* Modern font */
+            background: linear-gradient(135deg, #1f2a40, #0a111a);
+            animation: gradientShift 15s ease infinite alternate;
             overflow: hidden;
+            color: #e0e0e0;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* Main container with luxurious styling */
+        /* Main container: Frosted Glass Effect */
         .container {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            max-width: 900px;
+            height: 90%;
+            max-height: 750px;
+            background: rgba(15, 15, 26, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 4px rgba(71, 237, 240, 0.1);
+            padding: 40px;
+            backdrop-filter: blur(12px);
+            transition: all 0.5s ease-in-out;
+            gap: 25px;
+        }
+
+        /* Header */
+        .header-area {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 90%;
-            height: 80%;
-            background: rgba(255, 255, 255, 0.1); /* Frosted glass */
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Dramatic shadow */
-            padding: 20px;
-            backdrop-filter: blur(5px); /* Modern blur */
-            transition: all 0.5s ease-in-out;
-            gap: 20px; /* Space between webcam and vinyl */
+            padding-bottom: 10px;
+        }
+        h1 {
+            color: #47edf0;
+            font-size: 2.5em;
+            letter-spacing: 4px;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(71, 237, 240, 0.7);
+        }
+        .subtitle {
+            font-size: 1.1em;
+            color: #a0a0a0;
         }
 
-        /* Webcam section */
+        /* NEW: Toggle Switch Styling */
+        .switch-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toggle-label {
+            font-size: 0.9em;
+            font-weight: 700;
+            color: #ff6b6b; /* Default OFF state color */
+            width: 70px; /* fixed width for text alignment */
+            text-align: right;
+            transition: color 0.3s ease;
+        }
+        .toggle-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-checkbox input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc; /* OFF background */
+            transition: .4s;
+            border-radius: 34px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        input:checked + .slider {
+            background-color: #00ff41; /* ON background */
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        /* Update label color when checked */
+        .toggle-checkbox input:checked ~ .toggle-label {
+            color: #00ff41;
+            text-align: left;
+        }
+
+
+        /* Webcam and Visualization Area */
+        .main-content {
+            display: flex;
+            gap: 30px;
+            flex-grow: 1;
+        }
+        
+        /* Webcam Container (Left Side) - DYNAMIC BORDER */
         .webcam-container {
-            width: 50%; /* Half screen */
-            height: 100%;
-            border: 4px dashed #e74c3c; /* Vibrant red dashed border */
+            width: 50%; 
+            position: relative;
+            background: #000;
             border-radius: 15px;
             overflow: hidden;
-            background: rgba(231, 76, 60, 0.1); /* Subtle tint */
+            border: 4px solid rgba(52, 152, 219, 0.5); 
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+            transition: all 0.4s ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 1; 
+        }
+        .system-off .webcam-container {
+            opacity: 0.5;
         }
 
-        #webcam {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-
-        /* Vinyl animation section */
-        .animation-container {
-            width: 50%; /* Half screen */
-            height: 100%;
+        /* Emotion Display Container (Right Side) - INTERACTIVE CONTAINER */
+        .emotion-display-container {
+            width: 50%; 
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: center;
+            border-radius: 15px;
+            position: relative;
+            transform-style: preserve-3d; 
+            cursor: grab;
         }
 
-        /* Enhanced emotion display */
-        .emotion-display {
-            width: 90%;
-            background-color: #3498db; /* Blue background */
-            padding: 15px 25px; /* More spacious padding */
-            border-radius: 10px 10px 0 0;
-            color: #ecf0f1; /* Light text */
-            font-size: 24px; /* Larger font */
-            font-weight: bold; /* Bold for emphasis */
-            text-align: center; /* Centered text */
-            margin-bottom: 10px;
-            border: 2px solid #ffffff; /* Classy white border */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+        /* The Aura Ring - New Aesthetic Element */
+        #aura-ring {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            border: 0px solid transparent; 
+            box-shadow: 0 0 0px transparent;
+            transition: all 0.2s ease-out; 
+            opacity: 0.8;
+            pointer-events: none;
+            transform: translateZ(20px); 
         }
 
+        /* The "Aura" Emotion Text */
         #emotion {
-            background: linear-gradient(45deg, #f1c40f, #f39c12); /* Yellow gradient button */
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 24px;
-            font-weight: bold;
+            z-index: 10;
+            font-size: 3.5em; 
+            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 5px 15px rgba(241, 196, 15, 0.5);
-            display: inline-block;
-            margin-left: 10px;
+            letter-spacing: 6px;
+            padding: 25px 35px;
+            border-radius: 20px;
+            transition: all 0.5s ease-in-out;
+            animation: pulseText 3s ease-in-out infinite alternate; 
+            text-align: center;
+            transform: translateZ(50px);
+        }
+        @keyframes pulseText {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.02); }
+        }
+
+        /* DYNAMIC EMOTION STYLES */
+        .style-happy { color: #ffdd44; background: rgba(255, 221, 68, 0.1); box-shadow: 0 0 10px rgba(255, 221, 68, 0.5); border-color: #ffdd44 !important; }
+        .style-sad { color: #87ceeb; background: rgba(135, 206, 235, 0.1); box-shadow: 0 0 10px rgba(135, 206, 235, 0.5); border-color: #87ceeb !important; }
+        .style-neutral { color: #00ff41; background: rgba(0, 255, 65, 0.1); box-shadow: 0 0 10px rgba(0, 255, 65, 0.5); border-color: #00ff41 !important; }
+        .style-angry, .style-disgusted { color: #ff4500; background: rgba(255, 69, 0, 0.1); box-shadow: 0 0 10px rgba(255, 69, 0, 0.5); border-color: #ff4500 !important; }
+        .style-surprised, .style-fearful { color: #9c27b0; background: rgba(156, 39, 176, 0.1); box-shadow: 0 0 10px rgba(156, 39, 176, 0.5); border-color: #9c27b0 !important; }
+        .style-noface { color: #ff6b6b; background: rgba(255, 107, 107, 0.1); box-shadow: 0 0 10px rgba(255, 107, 107, 0.5); border-color: #ff6b6b !important; }
+
+        /* Status Footer */
+        .status-footer {
+            width: 100%;
+            background-color: rgba(30, 30, 45, 0.9);
+            border-radius: 15px;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1em;
+            color: #bbbbbb;
+            border-top: 2px solid rgba(71, 237, 240, 0.2);
+        }
+        #music-status {
+            font-weight: bold;
+            color: #00ff41;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            .header-area { flex-direction: column; gap: 10px; }
+            .main-content { flex-direction: column; }
+            .webcam-container, .emotion-display-container { width: 100%; height: 250px; }
+            #emotion { font-size: 2em; padding: 15px 20px; letter-spacing: 3px; }
+            h1 { font-size: 2em; }
+            .status-footer { flex-direction: column; gap: 10px; text-align: center; }
         }
     </style>
 </head>
-<body>
+<body id="body-container">
     <div class="container">
-        <!-- Webcam on the left (half screen) -->
-        <div class="webcam-container">
-            <video id="webcam" autoplay playsinline></video>
-        </div>
-        <!-- Vinyl animation on the right (half screen) with emotion display above -->
-        <div class="animation-container">
-            <div class="emotion-display">
-                <span id="emotion">Waiting...</span>
+        <div class="header-area">
+            <div style="text-align: left;">
+                <h1>💎 AURA INTENSITY ANALYZER ⚡</h1>
+                <div class="subtitle">Real-time Mood Music System with Dynamic Feedback</div>
             </div>
-            <dotlottie-player 
-                src="https://lottie.host/2c62de48-a87f-47b0-b37c-a6fa4493b8d5/b1fz2K197W.json" 
-                background="transparent" 
-                speed="1" 
-                style="width: 100%; height: 85%;" 
-                loop 
-                autoplay>
-            </dotlottie-player>
+            <div class="switch-wrapper">
+                <label id="toggle-status-label" class="toggle-label" for="power-toggle-input">OFFLINE</label>
+                <label class="toggle-checkbox">
+                    <input type="checkbox" id="power-toggle-input" />
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div id="webcam-container-wrapper" class="webcam-container style-noface">
+                <video id="webcam" autoplay playsinline muted></video>
+                <div id="webcam-status-message" class="webcam-message">
+                    **Loading Camera... Please allow access.**
+                </div>
+            </div>
+
+            <div id="interactive-emotion-container" class="emotion-display-container">
+                <div id="aura-ring"></div>
+                <span id="emotion" class="style-noface">
+                    SYSTEM OFFLINE
+                </span>
+            </div>
+        </div>
+        
+        <div class="status-footer">
+            <span id="music-status">Status: System Initialized.</span>
+            <span id="system-message">System: Flip the switch to begin.</span>
         </div>
     </div>
 
-    <!-- Load required libraries -->
-    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.9.0"></script>
+    
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.9.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
+    
     <script>
-        // Webcam functionality
+        const bodyContainer = document.getElementById('body-container');
         const webcam = document.getElementById('webcam');
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    webcam.srcObject = stream;
-                })
-                .catch(error => {
-                    console.error('Webcam access error:', error);
-                    document.getElementById('emotion').innerText = 'Webcam access denied. Please allow permission.';
-                });
-        } else {
-            document.getElementById('emotion').innerText = 'Webcam not supported in this browser.';
-        }
+        const webcamContainer = document.getElementById('webcam-container-wrapper');
+        const emotionDisplay = document.getElementById('emotion');
+        const webcamStatusMessage = document.getElementById('webcam-status-message');
+        const musicStatus = document.getElementById('music-status');
+        const systemMessage = document.getElementById('system-message');
+        const auraRing = document.getElementById('aura-ring');
+        const powerToggleInput = document.getElementById('power-toggle-input'); // The checkbox input
+        const toggleStatusLabel = document.getElementById('toggle-status-label'); // The label next to the switch
+        const interactiveContainer = document.getElementById('interactive-emotion-container');
 
-        // Load face-api.js models
-        async function loadModels() {
-            await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
-            await faceapi.nets.faceExpressionNet.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
-            console.log('Models loaded');
-        }
-
+        let isRunning = false;
+        let detectionInterval = null;
         let currentEmotion = null;
-        const audio = new Audio(); // Audio for playback
+        let videoStream = null;
+        const audio = new Audio();
+        audio.loop = true;
+        
+        const emotionColorMap = {
+            'happy': '#ffdd44', 'sad': '#87ceeb', 'neutral': '#00ff41', 
+            'angry': '#ff4500', 'surprised': '#9c27b0', 'fearful': '#9c27b0', 
+            'disgusted': '#ff4500', 'noface': '#ff6b6b'
+        };
 
-        // Map emotions to online music URLs with added moods
         const songMap = {
             'happy': 'https://github.com/GetSomeSleepBro/MoodMusic/raw/refs/heads/main/music/mm_happy.mp3',
             'sad': 'https://github.com/GetSomeSleepBro/MoodMusic/raw/refs/heads/main/music/mm_sad.mp3',
@@ -195,49 +338,200 @@
             'fearful': 'https://github.com/GetSomeSleepBro/MoodMusic/raw/refs/heads/main/music/mm_fearful.mp3',
             'disgusted': 'https://github.com/GetSomeSleepBro/MoodMusic/raw/refs/heads/main/music/mm_disgusted.mp3'
         };
+        
+        // --- CORE UI UPDATER ---
+        function updateEmotionUI(emotionText, rawEmotion, confidence = 0) {
+            emotionDisplay.innerText = emotionText;
+            
+            let cssClass = rawEmotion || 'noface';
+            let musicMessage = 'Detection Active. Awaiting emotion...';
+            
+            if (!isRunning) {
+                musicMessage = 'System OFFLINE.';
+                toggleStatusLabel.textContent = 'OFFLINE';
+            } else if (cssClass === 'noface') {
+                musicMessage = 'No face detected. Music paused.';
+                toggleStatusLabel.textContent = 'ONLINE';
+            } else {
+                 musicMessage = `Playing: ${rawEmotion.charAt(0).toUpperCase() + rawEmotion.slice(1)} Music`;
+                 toggleStatusLabel.textContent = 'ONLINE';
+            }
 
-        // Start detection and playback cycle
-        loadModels().then(() => {
-            setInterval(async () => {
-                let expressionCounts = {
-                    neutral: 0,
-                    happy: 0,
-                    sad: 0,
-                    angry: 0,
-                    surprised: 0,
-                    fearful: 0,
-                    disgusted: 0
+            // Apply Styles to Text and Webcam Border
+            const styleClassName = `style-${cssClass}`;
+            emotionDisplay.className = styleClassName;
+            webcamContainer.className = `webcam-container ${styleClassName}`;
+            musicStatus.textContent = musicMessage;
+
+            // DYNAMIC AURA RING UPDATE based on Confidence
+            const color = emotionColorMap[cssClass] || emotionColorMap.noface;
+            let intensity = confidence * 0.9 + 0.1;
+            
+            const thickness = 6 + (intensity * 10);
+            const shadowBlur = 20 + (intensity * 40);
+            const shadowSpread = 0.5 + (intensity * 1.5);
+
+            if (isRunning) {
+                auraRing.style.border = `${thickness}px solid ${color}`;
+                auraRing.style.boxShadow = `0 0 ${shadowBlur}px ${shadowSpread}px ${color}`;
+            } else {
+                 // Subtle static style when off
+                 auraRing.style.boxShadow = `0 0 10px 2px rgba(255, 255, 255, 0.1)`;
+                 auraRing.style.border = `2px solid rgba(255, 255, 255, 0.1)`;
+            }
+        }
+        
+        // --- INTERACTIVE FEATURE 1: MOUSE PARALLAX ---
+        // Parallax Logic (unchanged from previous version)
+        interactiveContainer.addEventListener('mousemove', (e) => {
+            const rect = interactiveContainer.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            const moveX = (e.clientX - centerX) / centerX;
+            const moveY = (e.clientY - centerY) / centerY;
+
+            const tiltFactor = 5; 
+            const translateFactor = 10; 
+
+            interactiveContainer.style.transform = `rotateX(${-moveY * tiltFactor}deg) rotateY(${moveX * tiltFactor}deg)`;
+            auraRing.style.transform = `translateZ(20px) translateX(${moveX * translateFactor}px) translateY(${moveY * translateFactor}px)`;
+            emotionDisplay.style.transform = `translateZ(50px) translateX(${moveX * translateFactor * 1.5}px) translateY(${moveY * translateFactor * 1.5}px)`;
+        });
+
+        interactiveContainer.addEventListener('mouseleave', () => {
+            interactiveContainer.style.transform = 'none';
+            auraRing.style.transform = 'translateZ(20px)';
+            emotionDisplay.style.transform = 'translateZ(50px)';
+        });
+        
+        // --- SYSTEM CONTROL LOGIC ---
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                videoStream = stream;
+                webcam.srcObject = stream;
+                webcam.onloadedmetadata = () => {
+                    webcam.play();
+                    webcamStatusMessage.style.display = 'none';
                 };
-                let detectionsMade = 0;
+                return true;
+            } catch (error) {
+                console.error('Webcam access error:', error);
+                webcamStatusMessage.innerText = '❌ WEBCAM DENIED. Please refresh.';
+                webcamStatusMessage.style.color = '#ff4500';
+                return false;
+            }
+        }
 
-                // 5-second detection phase
+        function stopCamera() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                webcam.srcObject = null;
+                webcamStatusMessage.style.display = 'block';
+                webcamStatusMessage.innerText = 'System OFFLINE.';
+            }
+        }
+        
+        function startDetection() {
+            if (!isRunning) return;
+            
+            detectionInterval = setInterval(async () => {
+                // ... (Your detection logic)
+                let expressionCounts = { neutral: 0, happy: 0, sad: 0, angry: 0, surprised: 0, fearful: 0, disgusted: 0 };
+                let detectionsMade = 0;
+                let lastDetection = null;
+                
                 for (let i = 0; i < 5; i++) {
-                    const detections = await faceapi.detectSingleFace(webcam, new faceapi.TinyFaceDetectorOptions())
-                        .withFaceExpressions();
+                    if (!isRunning) break;
+                    const detections = await faceapi.detectSingleFace(webcam, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
                     if (detections && detections.expressions) {
+                        lastDetection = detections; 
                         const emotion = detections.expressions.asSortedArray()[0].expression;
                         expressionCounts[emotion]++;
                         detectionsMade++;
                     }
-                    await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second intervals
+                    await new Promise(resolve => setTimeout(resolve, 1000));
                 }
+                
+                if (!isRunning) return;
 
-                // Determine dominant emotion
-                let dominantEmotion = Object.entries(expressionCounts).reduce((a, b) => a[1] > b[1] ? a : b, [null, 0])[0];
+                let dominantResult = Object.entries(expressionCounts).reduce((a, b) => a[1] > b[1] ? a : b, [null, 0]);
+                let dominantEmotion = dominantResult[0];
+                let confidenceScore = 0;
+
+                if (dominantEmotion && lastDetection && lastDetection.expressions) {
+                    confidenceScore = lastDetection.expressions[dominantEmotion]; 
+                }
+                
                 if (dominantEmotion && detectionsMade > 0) {
-                    document.getElementById('emotion').innerText = dominantEmotion.toUpperCase();
+                    updateEmotionUI(dominantEmotion.toUpperCase(), dominantEmotion, confidenceScore);
+                    
                     if (dominantEmotion !== currentEmotion) {
                         currentEmotion = dominantEmotion;
                         audio.src = songMap[dominantEmotion];
-                        audio.play().catch(error => console.error('Audio play error:', error));
+                        audio.play().catch(error => console.error('Audio play error. User interaction needed:', error));
                     }
-                } else if (detectionsMade === 0) {
-                    document.getElementById('emotion').innerText = 'No face detected. Please adjust.';
+                } else {
+                    updateEmotionUI('NO FACE DETECTED', 'noface', 0);
+                    if (audio.src && !audio.paused) {
+                        audio.pause();
+                    }
                 }
-            }, 5000); // Repeat every 5 seconds
-        }).catch(error => {
-            console.error('Model loading error:', error);
+            }, 5000); 
+        }
+
+        function stopDetection() {
+            clearInterval(detectionInterval);
+            audio.pause();
+            currentEmotion = null;
+        }
+
+        // --- INTERACTIVE FEATURE 2: SLIDER TOGGLE ---
+        powerToggleInput.addEventListener('change', async () => {
+            if (powerToggleInput.checked) {
+                // Turn ON
+                systemMessage.textContent = 'System: Requesting camera...';
+                const cameraStarted = await startCamera();
+                
+                if (cameraStarted) {
+                    isRunning = true;
+                    await loadModels();
+                    startDetection();
+                    bodyContainer.classList.remove('system-off');
+                    systemMessage.textContent = 'System: Models loaded. Detection running.';
+                    updateEmotionUI('AWAITING EMOTION', 'neutral', 0.1);
+                } else {
+                    // Revert the toggle state if camera fails
+                    powerToggleInput.checked = false;
+                    systemMessage.textContent = 'System: Failed to start camera.';
+                    updateEmotionUI('SYSTEM OFFLINE', 'noface', 0);
+                }
+            } else {
+                // Turn OFF
+                isRunning = false;
+                stopDetection();
+                stopCamera();
+                bodyContainer.classList.add('system-off');
+                updateEmotionUI('SYSTEM OFFLINE', 'noface', 0);
+                systemMessage.textContent = 'System: Detection and camera stopped.';
+            }
         });
+        
+        // --- INITIALIZATION ---
+        async function loadModels() {
+            systemMessage.textContent = 'System: Loading models...';
+            // Only load models once!
+            if (!window.faceapi || !faceapi.nets.tinyFaceDetector.isLoaded || !faceapi.nets.faceExpressionNet.isLoaded) {
+                 await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
+                 await faceapi.nets.faceExpressionNet.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
+            }
+            systemMessage.textContent = 'System: Models ready.';
+        }
+        
+        // Initial setup
+        loadModels(); 
+        updateEmotionUI('SYSTEM OFFLINE', 'noface', 0); // Sets initial UI state to OFF
     </script>
 </body>
 </html>
